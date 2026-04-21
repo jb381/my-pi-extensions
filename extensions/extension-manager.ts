@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { basename, join } from "node:path";
 import { getAgentDir, type ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { Key, matchesKey, truncateToWidth } from "@mariozechner/pi-tui";
 import codexLimitExtension from "./codex-limit";
@@ -15,6 +15,7 @@ type RepoExtensionInfo = {
 	load: (pi: ExtensionAPI) => void | Promise<void>;
 };
 
+const EXTENSION_DIR = __dirname;
 const SELECTION_DIR = join(getAgentDir(), "extensions");
 const SELECTION_FILE = join(SELECTION_DIR, "my-pi-extensions.json");
 
@@ -32,6 +33,14 @@ const EXTENSIONS: RepoExtensionInfo[] = [
 		load: codexLimitExtension,
 	},
 ];
+
+function findUnregisteredExtensionFiles(): string[] {
+	return readdirSync(EXTENSION_DIR, { withFileTypes: true })
+		.filter((entry) => entry.isFile() && entry.name.endsWith(".ts") && entry.name !== "extension-manager.ts")
+		.map((entry) => basename(entry.name, ".ts"))
+		.filter((id) => !EXTENSIONS.some((extension) => extension.id === id))
+		.sort();
+}
 
 function normalizeDisabled(values: unknown): string[] {
 	if (!Array.isArray(values)) return [];
@@ -99,6 +108,7 @@ export default async function repoExtensionManager(pi: ExtensionAPI): Promise<vo
 			}
 
 			const selection = loadSelection();
+			const unregistered = findUnregisteredExtensionFiles();
 			const disabled = new Set(selection.disabled);
 			let selected = 0;
 			let scroll = 0;
@@ -140,6 +150,13 @@ export default async function repoExtensionManager(pi: ExtensionAPI): Promise<vo
 						const lines: string[] = [];
 						lines.push(theme.fg("accent", theme.bold("Repo Extensions")));
 						lines.push(theme.fg("dim", "↑↓ move • space toggle • a all • n none • enter save • esc cancel"));
+						if (unregistered.length > 0) {
+							lines.push("");
+							lines.push(theme.fg("warning", truncateToWidth(`Unregistered extension files: ${unregistered.join(", ")}`, width)));
+							lines.push(
+								theme.fg("dim", truncateToWidth("Add them to the EXTENSIONS registry in extensions/extension-manager.ts", width)),
+							);
+						}
 						lines.push("");
 
 						const end = Math.min(EXTENSIONS.length, scroll + visibleRows);
