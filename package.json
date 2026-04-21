@@ -2,8 +2,18 @@
   "name": "my-pi-extensions",
   "description": "A small collection of local-first pi extensions.",
   "license": "MIT",
-  "keywords": ["pi-package"],
+  "keywords": [
+    "pi-package"
+  ],
   "pi": {
-    "extensions": ["./extensions"]
+    "extensions": [
+      "./extensions/extension-manager.ts"
+    ]
+  },
+  "devDependencies": {
+    "@mariozechner/pi-coding-agent": "^0.68.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@types/node": "^25.6.0",
+    "typescript": "^6.0.3"
   }
 }

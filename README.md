@@ -1,15 +1,16 @@
 # my-pi-extensions
 
-A small, opinionated collection of **pi** extensions I actually use.
+A small, opinionated collection of **pi** extensions.
 
 Built for [pi](https://pi.dev) — the terminal coding harness.
 Source: [badlogic/pi-mono](https://github.com/badlogic/pi-mono).
 
 ## What’s inside
 
-| Extension | Type | What it does | Link |
-|---|---|---|---|
-| `codex-limit` | Command + status spinner | Shows your current Codex limits on demand with `/codex-limit`. Minimal, no background polling, just a quick status check when you ask for it. | [`extensions/codex-limit.ts`](./extensions/codex-limit.ts) |
+| Extension | Emoji | Type | What it does | Link |
+|---|---|---|---|---|
+| `extensions` | 🧩 | Interactive selector | Opens `/extensions`, where you can enable or disable repo extensions, then reloads pi to apply the change. Minimal by design: no background state, no persistent footer UI, and no extra dependencies. | [`extensions/extension-manager.ts`](./extensions/extension-manager.ts) |
+| `codex-limit` | ⏳ | Command + status spinner | Shows your current Codex limits on demand with `/codex-limit`. Minimal, no background polling, just a quick status check when you ask for it. | [`extensions/codex-limit.ts`](./extensions/codex-limit.ts) |
 
 ## If you want to use these extensions
 
@@ -25,11 +26,29 @@ pi install ~/dev/my-pi-extensions
 /reload
 ```
 
-### 3. Use the command
+### 3. Open the selector
+
+```text
+/extensions
+```
+
+### 4. Selector keys
+
+Inside the selector:
+- `↑↓` move
+- `space` toggle
+- `a` enable all
+- `n` disable all
+- `enter` save + reload
+- `esc` cancel
+
+### 5. Use the enabled commands
 
 ```text
 /codex-limit
 ```
+
+> Note: pi does not support truly unloading an extension that is already running. This package keeps things simple: one manager extension is always loaded, and it conditionally enables the repo extensions listed in a small static registry. Your choices are saved to `~/.pi/agent/extensions/my-pi-extensions.json` and applied on reload.
 
 ## What kinds of extensions can pi do?
 
@@ -55,10 +74,16 @@ Full docs:
 
 This repo is intentionally small and pi-friendly:
 
+- `package.json` points pi at a single entrypoint: `extensions/extension-manager.ts`
+- the manager keeps a tiny static registry of repo extensions
+- selection state is stored in one JSON file under the pi agent directory
+- no runtime filesystem discovery or external dependencies are required
+
 ```text
 my-pi-extensions/
 ├── extensions/
-│   └── codex-limit.ts
+│   ├── codex-limit.ts
+│   └── extension-manager.ts
 ├── package.json
 ├── README.md
 └── .gitignore
