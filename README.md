@@ -7,10 +7,10 @@ Source: [badlogic/pi-mono](https://github.com/badlogic/pi-mono).
 
 ## What’s inside
 
-| Extension | Emoji | Type | What it does | Link |
-|---|---|---|---|---|
-| `extensions` | 🧩 | Interactive selector | Opens `/extensions`, where you can enable or disable repo extensions, then reloads pi to apply the change. Minimal by design: no background state, no persistent footer UI, and no extra dependencies. | [`extensions/extension-manager.ts`](./extensions/extension-manager.ts) |
-| `codex-limit` | ⏳ | Command + status spinner | Shows your current Codex limits on demand with `/codex-limit`. Minimal, no background polling, just a quick status check when you ask for it. | [`extensions/codex-limit.ts`](./extensions/codex-limit.ts) |
+| Extension | Type | What it does | Link |
+|---|---|---|---|
+| 🧩 `extensions` | Interactive selector | Opens `/extensions`, where you can enable or disable repo extensions, then reloads pi to apply the change. Minimal by design: no background state, no persistent footer UI, and no extra dependencies. | [`extensions/extension-manager.ts`](./extensions/extension-manager.ts) |
+| ⏳ `codex-limit` | Command + status spinner | Shows your current Codex limits on demand with `/codex-limit`. Minimal, no background polling, just a quick status check when you ask for it. | [`extensions/codex-limit.ts`](./extensions/codex-limit.ts) |
 
 ## If you want to use these extensions
 
