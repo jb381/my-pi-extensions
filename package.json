@@ -1,0 +1,9 @@
+{
+  "name": "my-pi-extensions",
+  "description": "A small collection of local-first pi extensions.",
+  "license": "MIT",
+  "keywords": ["pi-package"],
+  "pi": {
+    "extensions": ["./extensions"]
+  }
+}
