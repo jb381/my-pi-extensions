@@ -5,9 +5,16 @@
   "keywords": [
     "pi-package"
   ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck"
+  },
   "pi": {
     "extensions": [
       "./extensions/extension-manager.ts"
+    ],
+    "skills": [
+      "./skills"
     ]
   },
   "devDependencies": {
