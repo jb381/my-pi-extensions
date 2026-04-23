@@ -25,12 +25,28 @@ function formatDuration(ms: number): string {
 	return `${rest}m`;
 }
 
-function formatWindow(label: string, window?: RateWindow | null): string | null {
+function formatUsageBar(usedPercent: number, width = 10): string {
+	const used = Math.max(0, Math.min(100, usedPercent));
+	const filled = Math.round((used / 100) * width);
+	return `[${"█".repeat(filled)}${"░".repeat(Math.max(0, width - filled))}]`;
+}
+
+function getUsageColor(usedPercent: number): "success" | "warning" | "error" {
+	if (usedPercent >= 80) return "error";
+	if (usedPercent >= 50) return "warning";
+	return "success";
+}
+
+function formatWindow(theme: { fg(color: "accent" | "success" | "warning" | "error" | "dim", text: string): string }, label: string, window?: RateWindow | null): string | null {
 	if (!window) return null;
-	const used = Math.max(0, Math.min(100, window.usedPercent ?? 0)).toFixed(0);
+	const used = Math.max(0, Math.min(100, window.usedPercent ?? 0));
 	const delta = window.resetsAt ? window.resetsAt * 1000 - Date.now() : null;
 	const reset = delta === null ? "unknown" : delta <= 0 ? "now" : `in ${formatDuration(delta)}`;
-	return `${label}: ${used}% used, resets ${reset}`;
+	const usageColor = getUsageColor(used);
+	const bar = theme.fg(usageColor, formatUsageBar(used));
+	const percent = theme.fg(usageColor, `${used.toFixed(0)}%`);
+	const labelText = theme.fg("accent", label.padEnd(7, " "));
+	return `${labelText}: ${bar} ${percent} used, resets ${theme.fg("dim", reset)}`;
 }
 
 class RpcClient {
@@ -46,22 +62,39 @@ class RpcClient {
 		this.pending.clear();
 	}
 
-	async start(): Promise<void> {
-		this.proc = spawn(this.command, [...this.args, "-s", "read-only", "-a", "untrusted", "app-server"], {
-			stdio: ["pipe", "pipe", "pipe"],
-			env: process.env,
-		});
+	async start(options?: { initializeTimeoutMs?: number; retryOnTimeout?: boolean; onRetry?: () => void }): Promise<void> {
+		const initializeTimeoutMs = options?.initializeTimeoutMs ?? 20_000;
+		const retryOnTimeout = options?.retryOnTimeout ?? true;
+		const onRetry = options?.onRetry;
 
-		this.proc.stdout.setEncoding("utf8");
-		this.proc.stdout.on("data", (chunk: string) => this.onStdout(chunk));
-		this.proc.stderr.on("data", () => {});
-		this.proc.on("error", (error) => this.failAll(error));
-		this.proc.on("exit", (code, signal) => {
-			this.failAll(new Error(`Codex exited (${signal ?? code ?? "unknown"})`));
-		});
+		for (let attempt = 0; attempt < (retryOnTimeout ? 2 : 1); attempt++) {
+			try {
+				this.proc = spawn(this.command, [...this.args, "-s", "read-only", "-a", "untrusted", "app-server"], {
+					stdio: ["pipe", "pipe", "pipe"],
+					env: process.env,
+				});
 
-		await this.request("initialize", { clientInfo: { name: "pi-codex-limit", version: "1.0.0" } });
-		this.notify("initialized");
+				this.proc.stdout.setEncoding("utf8");
+				this.proc.stdout.on("data", (chunk: string) => this.onStdout(chunk));
+				this.proc.stderr.on("data", () => {});
+				this.proc.on("error", (error) => this.failAll(error));
+				this.proc.on("exit", (code, signal) => {
+					this.failAll(new Error(`Codex exited (${signal ?? code ?? "unknown"})`));
+				});
+
+				await this.request("initialize", { clientInfo: { name: "pi-codex-limit", version: "1.0.0" } }, initializeTimeoutMs);
+				this.notify("initialized");
+				return;
+			} catch (error) {
+				await this.stop();
+				if (!retryOnTimeout || attempt > 0 || !(error instanceof Error) || !error.message.includes("Timed out waiting for Codex initialize")) {
+					throw error;
+				}
+
+				onRetry?.();
+				await new Promise((resolve) => setTimeout(resolve, 1000));
+			}
+		}
 	}
 
 	async stop(): Promise<void> {
@@ -155,10 +188,14 @@ async function resolveLauncher(pi: ExtensionAPI): Promise<CodexLauncher> {
 	throw new Error("Could not find Codex CLI. Set CODEX_BINARY or install @openai/codex.");
 }
 
+function shouldShowCredits(args: string): boolean {
+	return /(^|\s)(--credits|--show-credits|-c)(\s|$)/.test(args);
+}
+
 export default function (pi: ExtensionAPI): void {
 	pi.registerCommand("codex-limit", {
-		description: "Show current Codex rate limits",
-		handler: async (_args, ctx) => {
+		description: "Show current Codex rate limits (use --credits to include balance)",
+		handler: async (args, ctx) => {
 			const statusKey = "codex-limit";
 			let timer: ReturnType<typeof setInterval> | undefined;
 			const setStatus = (text?: string) => {
@@ -179,12 +216,18 @@ export default function (pi: ExtensionAPI): void {
 				const launcher = await resolveLauncher(pi);
 				const rpc = new RpcClient(launcher.command, launcher.args);
 				try {
-					await rpc.start();
+					await rpc.start({
+						initializeTimeoutMs: 25_000,
+						retryOnTimeout: true,
+						onRetry: () => ctx.ui.notify("Codex is warming up, retrying once...", "warning"),
+					});
 					const limits = (await rpc.fetchRateLimits()).rateLimits ?? null;
+					const theme = ctx.ui.theme;
+					const showCredits = shouldShowCredits(args);
 					const lines = [
-						formatWindow("5h", limits?.primary ?? null),
-						formatWindow("Weekly", limits?.secondary ?? null),
-						limits?.credits?.balance ? `Credits: ${limits.credits.balance}` : null,
+						formatWindow(theme, "5h", limits?.primary ?? null),
+						formatWindow(theme, "Weekly", limits?.secondary ?? null),
+						showCredits && limits?.credits?.balance ? theme.fg("accent", `Credits: ${limits.credits.balance}`) : null,
 					].filter((line): line is string => Boolean(line));
 
 					ctx.ui.notify(lines.length ? lines.join("\n") : "No Codex limits found.", "info");

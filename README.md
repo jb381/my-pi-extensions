@@ -48,6 +48,7 @@ Use the command:
 
 ```text
 /codex-limit
+/codex-limit --credits
 ```
 
 > Note: pi does not support truly unloading an extension that is already running. This repo keeps one manager extension always loaded and uses a small static registry to toggle the repo extensions. Selection is saved to `~/.pi/agent/extensions/my-pi-extensions.json` and applied on reload.
