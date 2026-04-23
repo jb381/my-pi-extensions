@@ -1,15 +1,29 @@
 # my-pi-extensions
 
-A small, opinionated collection of **pi** extensions and helper skills.
+A minimalist pi sidecar for the stuff I actually use.
+
+This repo is a small, local-first package of pi extensions and helper skills I keep around to make the workflow faster, leaner, and less noisy:
+
+- quick access to the things I check repeatedly
+- tiny helpers instead of heavy machinery
+- opt-in tools that stay readable and easy to trust
 
 Built for [pi](https://pi.dev), the terminal coding harness.
+
+## Why this exists
+
+Because good tooling should:
+
+- do one thing well
+- stay out of the way
+- feel obvious when you come back to it later
 
 ## Extensions
 
 | Extension | What it does | Link |
 |---|---|---|
 | 🧩 `extensions` | Opens `/extensions` so you can enable or disable repo extensions, then reloads pi. | [`extensions/extension-manager.ts`](./extensions/extension-manager.ts) |
-| ⏳ `codex-limit` | Shows current Codex rate limits on demand with `/codex-limit`. | [`extensions/codex-limit.ts`](./extensions/codex-limit.ts) |
+| ⏳ `codex-limit` | Shows current Codex rate limits on demand with `/codex-limit`. Add `--credits` if you want the balance too. | [`extensions/codex-limit.ts`](./extensions/codex-limit.ts) |
 
 ## Skills
 
@@ -17,64 +31,32 @@ Built for [pi](https://pi.dev), the terminal coding harness.
 |---|---|---|
 | 🗂️ `repo-sandbox` | Clones external repos into a reusable sandbox and browses them with bash instead of loading huge trees into context. | [`skills/repo-sandbox/SKILL.md`](./skills/repo-sandbox/SKILL.md) |
 
-## Use it
+## Install
 
 ```bash
 pi install ~/dev/my-pi-extensions
 ```
 
-Then reload pi:
+Then reload pi so it picks up the package:
 
 ```text
 /reload
 ```
 
-Open the selector:
+If you install this into your own pi config, it behaves like a normal pi package: extensions and skills are discovered from the repo, and the manager extension lets you toggle repo extensions without touching config files by hand.
+
+## Extension switchboard
+
+Open the switchboard with:
 
 ```text
 /extensions
 ```
 
-Selector keys:
-
-- `↑↓` move
-- `space` toggle
-- `a` enable all
-- `n` disable all
-- `enter` save + reload
-- `esc` cancel
-
-Use the command:
-
-```text
-/codex-limit
-/codex-limit --credits
-```
-
-> Note: pi does not support truly unloading an extension that is already running. This repo keeps one manager extension always loaded and uses a small static registry to toggle the repo extensions. Selection is saved to `~/.pi/agent/extensions/my-pi-extensions.json` and applied on reload.
-
-## Repo layout
-
-```text
-my-pi-extensions/
-├── extensions/
-│   ├── codex-limit.ts
-│   └── extension-manager.ts
-├── skills/
-│   └── repo-sandbox/
-│       └── SKILL.md
-├── package.json
-├── README.md
-└── .gitignore
-```
-
-## Development
-
-- `npm run typecheck` — type-check the TypeScript sources
-- `npm run check` — alias for `typecheck`
+It gives you a quick TUI to enable or disable repo extensions.
 
 ## Notes
 
 - Built for personal use first
-- Small and readable on purpose
+- Small on purpose
 - Extensions run with full system access, so only install code you trust
