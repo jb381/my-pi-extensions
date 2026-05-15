@@ -14,6 +14,7 @@
 | 4 | 🚀 **[Yeet](./extensions/yeet.ts)** | `/yeet` → git add, commit, and push in one shot. Optionally add extra instructions. Because typing three commands is for chumps. |
 | 5 | 📋 **[Review](./extensions/review.ts)** | `/review` → code review with prioritized findings, verdicts, and human callouts. Supports PRs, branches, commits, uncommitted changes, and folder snapshots. Forked from [pi-review](https://github.com/earendil-works/pi-review) and adapted. |
 | 6 | 🎯 **[Goal](./extensions/goal.ts)** | `/goal <objective>` → persistent Codex-style objective loop. Auto-continues across turns until verified complete, paused, blocked, or cleared. Adapted from the [Codex CLI](https://github.com/openai/codex) open-source /goal system. |
+| 7 | 📊 **[Usage](./extensions/usage.ts)** | `/usage` → professional-grade token & cost report. Scans all session files, aggregates by model/provider across 1/7/30/90 day windows. No persistent UI — clean tables only when you ask. Also exposes `generate_usage_report` tool for LLM-driven queries. |
 
 ## 🎨 Themes
 
