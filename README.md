@@ -13,6 +13,7 @@
 | 3 | ⚡ **[TPS Tracker](./extensions/tps-tracker.ts)** | Live tokens-per-second readout in the footer while streaming. Because knowing your speed is cool — and useful. |
 | 4 | 🚀 **[Yeet](./extensions/yeet.ts)** | `/yeet` → git add, commit, and push in one shot. Optionally add extra instructions. Because typing three commands is for chumps. |
 | 5 | 📋 **[Review](./extensions/review.ts)** | `/review` → code review with prioritized findings, verdicts, and human callouts. Supports PRs, branches, commits, uncommitted changes, and folder snapshots. Forked from [pi-review](https://github.com/earendil-works/pi-review) and adapted. |
+| 6 | 🎯 **[Goal](./extensions/goal.ts)** | `/goal <objective>` → persistent Codex-style objective loop. Auto-continues across turns until verified complete, paused, blocked, or cleared. |
 
 ## 🎨 Themes
 
@@ -26,6 +27,14 @@ Select one via `/settings` → Theme → `catppuccin-orange` or `catppuccin-pink
 ## 🎯 Skills
 
 *(none yet — the skills folder is waiting for your brilliance)*
+
+## 🧠 Research
+
+| # | Doc | What it is |
+|---|-----|------------|
+| 1 | 📄 **[Agent Harness Feature Ideas](./agent-harness-feature-ideas.md)** | 20 feature ideas collected from researching OpenCode, Aider, Goose, Codex CLI, and Claude Code — with impact/complexity ratings and implementation notes. |
+
+Cloned repos live in `~/.pi/agent/sandbox/` for reference.
 
 ## 🚀 Install
 
