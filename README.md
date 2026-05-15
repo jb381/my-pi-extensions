@@ -28,14 +28,6 @@ Select one via `/settings` → Theme → `catppuccin-orange` or `catppuccin-pink
 
 *(none yet — the skills folder is waiting for your brilliance)*
 
-## 🧠 Research
-
-| # | Doc | What it is |
-|---|-----|------------|
-| 1 | 📄 **[Agent Harness Feature Ideas](./agent-harness-feature-ideas.md)** | 20 feature ideas collected from researching OpenCode, Aider, Goose, Codex CLI, and Claude Code — with impact/complexity ratings and implementation notes. |
-
-Cloned repos live in `~/.pi/agent/sandbox/` for reference.
-
 ## 🚀 Install
 
 ```bash
