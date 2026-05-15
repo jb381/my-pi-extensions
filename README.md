@@ -1,6 +1,6 @@
 # 🧩 my-pi-extensions
 
-> Local-first [pi](https://github.com/earendil-works/pi-coding-agent) extensions & skills — drop 'em in, level up.
+> Local-first [pi](https://github.com/earendil-works/pi) extensions & skills — drop 'em in, level up.
 
 ## 📦 Extensions
 
