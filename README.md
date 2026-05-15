@@ -1,62 +1,33 @@
-# my-pi-extensions
+# 🧩 my-pi-extensions
 
-A minimalist pi sidecar for the stuff I actually use.
+> Local-first [pi](https://github.com/earendil-works/pi-coding-agent) extensions & skills — drop 'em in, level up.
 
-This repo is a small, local-first package of pi extensions and helper skills I keep around to make the workflow faster, leaner, and less noisy:
+## 📦 Extensions
 
-- quick access to the things I check repeatedly
-- tiny helpers instead of heavy machinery
-- opt-in tools that stay readable and easy to trust
+| # | Extension | What it do |
+|---|-----------|------------|
+| 1 | 🔍 **[Firecrawl Search](./extensions/firecrawl-search.ts)** | Web search + page scraping via Firecrawl API. Adds `search` / `scrape` tools right into your agent. Drop a `FIRECRAWL_API_KEY` in your `.env` and go. |
+| 2 | 🌈 **[Flow Title](./extensions/flow-title.ts)** | Gives the pi TUI a hot-pink / flashy-orange animated gradient header. The "PI" logo glows, sweeps, and vibes. Run `/flow-title` to flex. |
+| 3 | ⚡ **[TPS Tracker](./extensions/tps-tracker.ts)** | Live tokens-per-second readout in the footer while streaming. Because knowing your speed is cool — and useful. |
+| 4 | 🚀 **[Yeet](./extensions/yeet.ts)** | `/yeet` → git add, commit, and push in one shot. Optionally add extra instructions. Because typing three commands is for chumps. |
+| 5 | 📋 **[Review](./extensions/review.ts)** | `/review` → code review with prioritized findings, verdicts, and human callouts. Supports PRs, branches, commits, uncommitted changes, and folder snapshots. Forked from [pi-review](https://github.com/earendil-works/pi-review) and adapted. |
 
-Built for [pi](https://pi.dev), the terminal coding harness.
+## 🎯 Skills
 
-## Why this exists
+*(none yet — the skills folder is waiting for your brilliance)*
 
-Because good tooling should:
-
-- do one thing well
-- stay out of the way
-- feel obvious when you come back to it later
-
-## Extensions
-
-| Extension | What it does | Link |
-|---|---|---|
-| 🧩 `extensions` | Opens `/extensions` so you can enable or disable repo extensions, then reloads pi. | [`extensions/extension-manager.ts`](./extensions/extension-manager.ts) |
-| ⏳ `codex-limit` | Shows current Codex rate limits on demand with `/codex-limit`. Add `--credits` if you want the balance too. | [`extensions/codex-limit.ts`](./extensions/codex-limit.ts) |
-
-## Skills
-
-| Skill | What it does | Link |
-|---|---|---|
-| 🗂️ `repo-sandbox` | Clones external repos into a reusable sandbox and browses them with bash instead of loading huge trees into context. | [`skills/repo-sandbox/SKILL.md`](./skills/repo-sandbox/SKILL.md) |
-
-## Install
+## 🚀 Install
 
 ```bash
 pi install ~/dev/my-pi-extensions
 ```
 
-Then reload pi so it picks up the package:
+Then reload pi:
 
 ```text
 /reload
 ```
 
-If you install this into your own pi config, it behaves like a normal pi package: extensions and skills are discovered from the repo, and the manager extension lets you toggle repo extensions without touching config files by hand.
+---
 
-## Extension switchboard
-
-Open the switchboard with:
-
-```text
-/extensions
-```
-
-It gives you a quick TUI to enable or disable repo extensions.
-
-## Notes
-
-- Built for personal use first
-- Small on purpose
-- Extensions run with full system access, so only install code you trust
+*Made with 💖 and questionable color choices.*

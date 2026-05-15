@@ -1,26 +1,20 @@
 {
   "name": "my-pi-extensions",
   "description": "A small collection of local-first pi extensions.",
+  "private": true,
   "license": "MIT",
-  "keywords": [
-    "pi-package"
-  ],
+  "keywords": ["pi-package"],
   "scripts": {
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck"
   },
   "pi": {
-    "extensions": [
-      "./extensions/extension-manager.ts"
-    ],
-    "skills": [
-      "./skills"
-    ]
+    "extensions": ["./extensions"],
+    "skills": ["./skills"]
   },
   "devDependencies": {
-    "@mariozechner/pi-coding-agent": "^0.68.0",
-    "@modelcontextprotocol/sdk": "^1.29.0",
-    "@types/node": "^25.6.0",
-    "typescript": "^6.0.3"
+    "@earendil-works/pi-coding-agent": "^0.74.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
   }
 }
