@@ -13,7 +13,7 @@
 | 3 | ⚡ **[TPS Tracker](./extensions/tps-tracker.ts)** | Live tokens-per-second readout in the footer while streaming. Because knowing your speed is cool — and useful. |
 | 4 | 🚀 **[Yeet](./extensions/yeet.ts)** | `/yeet` → git add, commit, and push in one shot. Optionally add extra instructions. Because typing three commands is for chumps. |
 | 5 | 📋 **[Review](./extensions/review.ts)** | `/review` → code review with prioritized findings, verdicts, and human callouts. Supports PRs, branches, commits, uncommitted changes, and folder snapshots. Forked from [pi-review](https://github.com/earendil-works/pi-review) and adapted. |
-| 6 | 🎯 **[Goal](./extensions/goal.ts)** | `/goal <objective>` → persistent Codex-style objective loop. Auto-continues across turns until verified complete, paused, blocked, or cleared. |
+| 6 | 🎯 **[Goal](./extensions/goal.ts)** | `/goal <objective>` → persistent Codex-style objective loop. Auto-continues across turns until verified complete, paused, blocked, or cleared. Adapted from the [Codex CLI](https://github.com/openai/codex) open-source /goal system. |
 
 ## 🎨 Themes
 

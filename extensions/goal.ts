@@ -1,6 +1,11 @@
 /**
  * Goal – persistent, Codex-style long-running objectives for pi.
  *
+ * Adapted from the open-source Codex CLI /goal system (github.com/openai/codex).
+ * The prompt templates (goal context, completion audit, continuation rules)
+ * and tool surface closely follow the original implementation, ported to the
+ * pi extension API.
+ *
  * Provides a `/goal` command that keeps an objective attached to the current
  * session and automatically continues work at safe turn boundaries until the
  * goal is complete, paused, blocked, or cleared.
