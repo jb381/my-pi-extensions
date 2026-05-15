@@ -2,6 +2,8 @@
 
 > Local-first [pi](https://github.com/earendil-works/pi) extensions & skills — drop 'em in, level up.
 
+![pi start window](./assets/pi-start-window.png)
+
 ## 📦 Extensions
 
 | # | Extension | What it do |
