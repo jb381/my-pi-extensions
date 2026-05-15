@@ -10,7 +10,8 @@
   },
   "pi": {
     "extensions": ["./extensions"],
-    "skills": ["./skills"]
+    "skills": ["./skills"],
+    "themes": ["./themes"]
   },
   "devDependencies": {
     "@earendil-works/pi-coding-agent": "^0.74.0",

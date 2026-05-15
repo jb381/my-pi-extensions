@@ -12,6 +12,15 @@
 | 4 | 🚀 **[Yeet](./extensions/yeet.ts)** | `/yeet` → git add, commit, and push in one shot. Optionally add extra instructions. Because typing three commands is for chumps. |
 | 5 | 📋 **[Review](./extensions/review.ts)** | `/review` → code review with prioritized findings, verdicts, and human callouts. Supports PRs, branches, commits, uncommitted changes, and folder snapshots. Forked from [pi-review](https://github.com/earendil-works/pi-review) and adapted. |
 
+## 🎨 Themes
+
+| # | Theme | What it looks like |
+|---|-------|-------------------|
+| 1 | 🟠 **[Catppuccin Orange](./themes/catppuccin-orange.json)** | Warm orange accents + Catppuccin Mocha base. Firey, but cozy. |
+| 2 | 💗 **[Catppuccin Pink](./themes/catppuccin-pink.json)** | Hot pink accents + Catppuccin Mocha base. Bold and vibrant. |
+
+Select one via `/settings` → Theme → `catppuccin-orange` or `catppuccin-pink`.
+
 ## 🎯 Skills
 
 *(none yet — the skills folder is waiting for your brilliance)*
