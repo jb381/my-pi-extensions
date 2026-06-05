@@ -20,6 +20,8 @@
  *   /goal status        Show detailed status
  */
 
+import { performance } from "node:perf_hooks";
+
 import { StringEnum } from "@earendil-works/pi-ai";
 import type { ExtensionAPI, ExtensionCommandContext, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
@@ -91,6 +93,10 @@ function goalId() {
 
 function now() {
   return Date.now();
+}
+
+function timerNowMs() {
+  return performance.now();
 }
 
 function truncate(text: string, max: number) {
@@ -319,8 +325,8 @@ function goalResponse(goal: GoalState | undefined, plan?: GoalPlan) {
   };
 }
 
-function formatGoalSummary(goal: GoalState) {
-  return `${statusIcon(goal.status)} goal ${statusLabel(goal.status)} ${goal.turnsUsed} turns · ${formatElapsedSeconds(goal.timeUsedSeconds)} — ${truncate(goal.objective, 64)}`;
+function formatGoalSummary(goal: GoalState, timeLabel = formatElapsedSeconds(goal.timeUsedSeconds)) {
+  return `${statusIcon(goal.status)} goal ${statusLabel(goal.status)} ${goal.turnsUsed} turns · ${timeLabel} — ${truncate(goal.objective, 64)}`;
 }
 
 function formatDetailedGoal(goal: GoalState | undefined, plan?: GoalPlan) {
@@ -484,6 +490,13 @@ export default function (pi: ExtensionAPI) {
     } satisfies GoalState);
   }
 
+  function goalDisplayTime(state: GoalState) {
+    const isRunning = currentAgentGoalId === state.id && currentAgentStartedAt !== undefined;
+    if (!isRunning) return formatElapsedSeconds(state.timeUsedSeconds);
+    if (state.timeUsedSeconds === 0) return "running…";
+    return `${formatElapsedSeconds(state.timeUsedSeconds)} + running…`;
+  }
+
   function updateUi(ctx: ExtensionContext) {
     if (!ctx.hasUI) return;
 
@@ -493,9 +506,10 @@ export default function (pi: ExtensionAPI) {
       return;
     }
 
-    ctx.ui.setStatus("goal", formatGoalSummary(goal));
+    const summary = formatGoalSummary(goal, goalDisplayTime(goal));
+    ctx.ui.setStatus("goal", summary);
 
-    const lines = [formatGoalSummary(goal)];
+    const lines = [summary];
     if (goal.lastProgress) lines.push(`progress: ${truncate(goal.lastProgress, 120)}`);
     const activeStep = activePlanStep(plan);
     if (activeStep && goal.status === "active") lines.push(`plan: ${truncate(activeStep.step, 120)}`);
@@ -731,9 +745,10 @@ export default function (pi: ExtensionAPI) {
   });
 
   pi.on("agent_start", async (_event, ctx) => {
+    const startedAt = timerNowMs();
     currentAgentGoalId = goal?.status === "active" ? goal.id : undefined;
     currentAgentWasContinuation = nextAgentIsContinuation;
-    currentAgentStartedAt = currentAgentGoalId ? now() : undefined;
+    currentAgentStartedAt = currentAgentGoalId ? startedAt : undefined;
     nextAgentIsContinuation = false;
     currentAgentNonGoalToolCalls = 0;
     continuationQueued = false;
@@ -745,13 +760,20 @@ export default function (pi: ExtensionAPI) {
   });
 
   pi.on("agent_end", async (_event, ctx) => {
-    if (!goal) return;
+    if (!goal) {
+      currentAgentGoalId = undefined;
+      currentAgentWasContinuation = false;
+      currentAgentStartedAt = undefined;
+      currentAgentNonGoalToolCalls = 0;
+      updateUi(ctx);
+      return;
+    }
 
     const wasGoalRun = currentAgentGoalId === goal.id;
     if (wasGoalRun) {
       goal.turnsUsed += 1;
       if (currentAgentStartedAt !== undefined) {
-        goal.timeUsedSeconds += Math.max(0, Math.floor((now() - currentAgentStartedAt) / 1000));
+        goal.timeUsedSeconds += Math.max(0, Math.floor((timerNowMs() - currentAgentStartedAt) / 1000));
       }
       if (currentAgentNonGoalToolCalls > 0) {
         goal.noToolContinuationTurns = 0;
@@ -766,7 +788,10 @@ export default function (pi: ExtensionAPI) {
       persist(goal);
     }
 
+    currentAgentGoalId = undefined;
+    currentAgentWasContinuation = false;
     currentAgentStartedAt = undefined;
+    currentAgentNonGoalToolCalls = 0;
     updateUi(ctx);
 
     if (goal.status !== "active") return;
@@ -898,6 +923,12 @@ export default function (pi: ExtensionAPI) {
         return { content: [{ type: "text", text: validationError }], details: {}, isError: true };
       }
       goal = createGoalState(objective);
+      if (currentAgentGoalId === undefined) {
+        // If the model creates a goal mid-run, count elapsed time from the
+        // moment the goal exists instead of dropping this first goal turn.
+        currentAgentGoalId = goal.id;
+        currentAgentStartedAt = timerNowMs();
+      }
       plan = undefined;
       persist(goal);
       updateUi(ctx);
