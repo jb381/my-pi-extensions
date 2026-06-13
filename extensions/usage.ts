@@ -55,6 +55,7 @@ interface ModelRow {
   inputTokens: number;
   outputTokens: number;
   cacheReadTokens: number;
+  cacheWriteTokens: number;
   totalTokens: number;
   cost: number;
 }
@@ -218,6 +219,7 @@ function buildWindow(messages: AssistantMessage[], label: string, days: number):
       existing.inputTokens += msg.usage.input;
       existing.outputTokens += msg.usage.output;
       existing.cacheReadTokens += msg.usage.cacheRead;
+      existing.cacheWriteTokens += msg.usage.cacheWrite;
       existing.totalTokens += msg.usage.totalTokens;
       existing.cost += msg.usage.cost.total;
     } else {
@@ -228,6 +230,7 @@ function buildWindow(messages: AssistantMessage[], label: string, days: number):
         inputTokens: msg.usage.input,
         outputTokens: msg.usage.output,
         cacheReadTokens: msg.usage.cacheRead,
+        cacheWriteTokens: msg.usage.cacheWrite,
         totalTokens: msg.usage.totalTokens,
         cost: msg.usage.cost.total,
       });
@@ -242,6 +245,7 @@ function buildWindow(messages: AssistantMessage[], label: string, days: number):
     inputTokens: rows.reduce((s, r) => s + r.inputTokens, 0),
     outputTokens: rows.reduce((s, r) => s + r.outputTokens, 0),
     cacheReadTokens: rows.reduce((s, r) => s + r.cacheReadTokens, 0),
+    cacheWriteTokens: rows.reduce((s, r) => s + r.cacheWriteTokens, 0),
     totalTokens: rows.reduce((s, r) => s + r.totalTokens, 0),
     cost: rows.reduce((s, r) => s + r.cost, 0),
   };
