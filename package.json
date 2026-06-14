@@ -20,11 +20,11 @@
     "typebox": "*"
   },
   "devDependencies": {
-    "@earendil-works/pi-ai": "^0.74.0",
-    "@earendil-works/pi-coding-agent": "^0.74.0",
-    "@earendil-works/pi-tui": "^0.74.0",
-    "@types/node": "^22.0.0",
-    "typebox": "^1.1.38",
-    "typescript": "^5.7.0"
+    "@earendil-works/pi-ai": "^0.79.3",
+    "@earendil-works/pi-coding-agent": "^0.79.3",
+    "@earendil-works/pi-tui": "^0.79.3",
+    "@types/node": "^25.9.3",
+    "typebox": "^1.2.9",
+    "typescript": "^6.0.3"
   }
 }
