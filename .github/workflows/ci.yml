@@ -43,3 +43,6 @@ jobs:
           else
             echo "No test script defined, skipping tests."
           fi
+
+      - name: Audit npm dependencies for CVEs
+        run: bun audit --level high || true
